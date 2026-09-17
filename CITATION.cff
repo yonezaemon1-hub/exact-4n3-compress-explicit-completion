@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper and software record."
+title: "Exact 4n/3 Compress-with-Another Threshold for an Explicit Completion of a 3k+6-State Binary Family"
+type: software
+authors:
+  - family-names: Yonezu
+    given-names: Ryutaro
+version: 1.0.0
+date-released: 2026-09-12
+repository-code: "https://github.com/yonezaemon1-hub/exact-4n3-compress-explicit-completion"
+license: MIT

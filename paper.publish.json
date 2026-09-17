@@ -1,0 +1,15 @@
+{
+  "title": "Exact 4n/3 Compress-with-Another Threshold for an Explicit Completion of a 3k+6-State Binary Family",
+  "authors": [
+    {
+      "name": "Ryutaro Yonezu",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "date": "2026-09-12",
+  "version": "v1.0.0",
+  "license": "CC-BY-4.0",
+  "paper_doi": "",
+  "software_doi": "",
+  "repository": "https://github.com/yonezaemon1-hub/exact-4n3-compress-explicit-completion"
+}

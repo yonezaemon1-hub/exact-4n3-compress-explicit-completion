@@ -1,0 +1,22 @@
+{
+  "title": "Exact 4n/3 Compress-with-Another Threshold for an Explicit Completion of a 3k+6-State Binary Family",
+  "upload_type": "software",
+  "description": "Proof and reproducibility package for an explicit total completion of a 3k+6-state binary synchronizing family with q0 compress-with-another threshold exactly 4n/3.",
+  "creators": [
+    {
+      "name": "Yonezu, Ryutaro",
+      "affiliation": "Independent Researcher"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "version": "v1.0.0",
+  "publication_date": "2026-09-12",
+  "keywords": [
+    "synchronizing automata",
+    "compress-with-another threshold",
+    "finite automata",
+    "exact computation",
+    "reverse pair automaton"
+  ]
+}

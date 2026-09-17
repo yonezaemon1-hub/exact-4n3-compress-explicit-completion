@@ -1,0 +1,437 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Ahat}{\widehat{\mathcal A}}
+\newcommand{\pair}[2]{\{q_{#1},q_{#2}\}}
+\newcommand{\cat}{\operatorname{cat}}
+
+\title{Exact $4n/3$ Compress-with-Another Threshold\\
+for an Explicit Completion of a $3k+6$-State Binary Family}
+\author{Ryutaro Yonezu\\Independent Researcher}
+\date{12 September 2026\\Draft -- not peer reviewed}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Szyku\l a's 2026 open-problems survey presents a binary family $\mathcal A_k$ on $n=3k+6$ states and conjectures that the shortest word compressing $q_0$ with another state has length $4n/3$. The displayed transition definition, however, does not specify all transitions required for a complete deterministic semiautomaton, and the displayed candidate word has length $4k+9$ although $4n/3=4k+8$. We therefore do not claim to resolve that conjecture as stated. Instead, we define an explicit total completion $\Ahat_k$ that agrees with every displayed transition and specifies the missing cases separately. For this explicitly defined family we prove that the compress-with-another threshold of $q_0$ is exactly
+\[
+\cat_{\Ahat_k}(q_0)=4k+8=\frac{4n}{3}.
+\]
+An explicit shortest witness is
+\[
+ c_k=(ba)^{k+2}(ab)^{k+2}.
+\]
+The lower bound is obtained by an exact reverse-layer description in the unordered pair automaton. We also give an explicit reset word, proving that every $\Ahat_k$ is synchronizing. The general lower-bound proof is analytic for $k\ge5$; the four small cases $k=1,2,3,4$ are checked by an exact finite verifier included with the manuscript. No claim is made that the completion used here is identical to the completion intended in the original source.
+\end{abstract}
+
+\section{Introduction}
+For a deterministic finite complete semiautomaton $\mathcal A=(Q,\Sigma,\delta)$ and a state $q\in Q$, define the \emph{compress-with-another threshold} of $q$ as the minimum length of a word $w$ such that
+\[
+ \delta(q,w)=\delta(p,w)
+\]
+for some $p\ne q$. Szyku\l a recently isolated this parameter as a natural synchronization primitive and conjectured a linear upper bound for synchronizing strongly connected automata \cite{Szykula2026}. The same survey presents a particular binary family on $3k+6$ states for which the threshold of $q_0$ is conjectured to equal $4n/3$ \cite[Sec.~2.3, Conj.~8]{Szykula2026}; the construction is attributed there to D\.{z}yga's 2018 master's thesis \cite{Dzyga2018}.
+
+There is a source-level obstacle to treating the displayed construction as a fully specified object. The survey defines its ambient model to be complete deterministic semiautomata \cite[Sec.~1.1]{Szykula2026}, but the displayed piecewise transition formula for $\mathcal A_k$ leaves $\delta(q_0,b)$ unspecified and, depending on the parity of the terminal state $q_{3k+5}$, leaves one terminal transition unspecified as well. Independently, Conjecture~8 prints the word
+\[
+ (ab)^{k+2}a(ab)^{k+2}
+\]
+and labels its length as $4n/3$. The printed word has length $4k+9$, whereas $n=3k+6$ gives $4n/3=4k+8$.
+
+The purpose of this note is therefore deliberately narrower than ``resolving Conjecture~8''. We state a total automaton explicitly, agreeing with all displayed transition cases and adding only the missing transitions. For this total automaton we prove the exact $4n/3$ threshold and synchronizability. This separates a mathematical statement that can be checked from a provenance question that cannot be settled from the displayed formula alone.
+
+\paragraph{Main result.}
+Let $\Ahat_k$ be the explicit completion in Definition~\ref{def:completion}. Then for every $k\ge1$, $\Ahat_k$ is strongly connected and synchronizing, and
+\[
+ \cat_{\Ahat_k}(q_0)=4k+8=\frac{4}{3}(3k+6).
+\]
+The word $c_k=(ba)^{k+2}(ab)^{k+2}$ attains the bound. For $k\ge5$ the lower bound is proved by an exact symbolic reverse-pair analysis; the cases $k\le4$ are finite and are independently checked by the accompanying verifier.
+
+\section{The explicit completion}
+Fix $k\ge1$ and put
+\[
+ n=3k+6,\qquad A=2k+4,\qquad B=2k+5,\qquad M=3k+5=n-1.
+\]
+Thus $A$ is even and $B$ is odd.
+
+\begin{definition}[Explicit completion]\label{def:completion}
+The automaton $\Ahat_k=(Q,\{a,b\},\widehat\delta_k)$ has
+\[
+ Q=\{q_0,q_1,\ldots,q_M\}.
+\]
+Its action under $a$ is
+\[
+q_i a=
+\begin{cases}
+q_0,&i=0,\\
+q_{i+1},&1\le i\le 2k+3,\ i\text{ odd},\\
+q_{i-1},&1\le i\le 2k+3,\ i\text{ even},\\
+q_{i+1},&A\le i<M,\ i\text{ even},\\
+q_{i-1},&2k+7\le i<M,\ i\text{ odd},\\
+q_3,&i=B,\\
+q_M,&i=M,\ M\text{ even},\\
+q_{M-1},&i=M,\ M\text{ odd},
+\end{cases}
+\]
+and its action under $b$ is
+\[
+q_i b=
+\begin{cases}
+q_1,&i=0,\\
+q_{i+1},&1\le i\le 2k+3,\ i\text{ even},\\
+q_{i-1},&1\le i\le 2k+3,\ i\text{ odd},\\
+q_{i+1},&B\le i<M,\ i\text{ odd},\\
+q_{i-1},&2k+6\le i<M,\ i\text{ even},\\
+q_2,&i=A,\\
+q_M,&i=M,\ M\text{ odd},\\
+q_{M-1},&i=M,\ M\text{ even}.
+\end{cases}
+\]
+\end{definition}
+
+Every case printed in the transition display of \cite[Sec.~2.3]{Szykula2026} is retained. The additional assignments are $q_0b=q_1$ and the parity-complementary terminal transition $q_M\mapsto q_{M-1}$ for whichever letter does not already have the printed terminal self-loop. These additional assignments are part of the definition of $\Ahat_k$; we do not assert that they were the intended missing assignments in \cite{Szykula2026,Dzyga2018}.
+
+\begin{proposition}\label{prop:rank}
+Each letter of $\Ahat_k$ has rank $n-1$. The only two-element fibers are
+\[
+ q_4a=q_Ba=q_3,
+ \qquad
+ q_3b=q_Ab=q_2.
+\]
+Consequently a non-diagonal pair can become diagonal in one step only from
+\[
+ C_a=\pair{4}{B}\quad\text{under }a,
+ \qquad
+ C_b=\pair{3}{A}\quad\text{under }b.
+\]
+\end{proposition}
+
+\begin{proof}
+Inspection of Definition~\ref{def:completion} shows that all transitions except the displayed portal pairs are injective on their local adjacent-pair blocks. Under $a$, the two predecessors of $q_3$ are $q_4$ and $q_B$, and the unique missing image is $q_{2k+3}$. Under $b$, the two predecessors of $q_2$ are $q_3$ and $q_A$, and the unique missing image is $q_A$. No other image has two predecessors. The final statement follows immediately.
+\end{proof}
+
+\begin{proposition}\label{prop:sc}
+For every $k\ge1$, $\Ahat_k$ is strongly connected.
+\end{proposition}
+
+\begin{proof}
+Starting at $q_0$, one reaches $q_1$ by $b$, then $q_2$ by $a$, then $q_3$ by $b$, and so on along the main arm by alternating $a$ and $b$ until $q_{2k+3}$. The letter $a$ then reaches $q_A$ and a second $a$ reaches $q_B$. From $q_B$, the alternating forward transitions along the tail reach every state up to $q_M$. Thus every state is reachable from $q_0$.
+
+Conversely, every main-arm state can be moved downward to $q_1$ by the opposite adjacent-pair transitions and then to $q_0$ by $b$. Every tail state can be moved downward along the tail; $q_Ba=q_3$ enters the main arm. At $q_M$, the non-looping letter sends $q_M$ to $q_{M-1}$, after which the same downward argument applies. Hence every state reaches $q_0$.
+\end{proof}
+
+\section{The $4n/3$ upper bound}
+Define
+\[
+ c_k=(ba)^{k+2}(ab)^{k+2}.
+\]
+Its length is $4k+8=4n/3$.
+
+\begin{lemma}\label{lem:upper}
+For every $k\ge1$,
+\[
+ q_0c_k=q_2c_k=q_Bc_k=q_2.
+\]
+In particular $c_k$ compresses $q_0$ with another state.
+\end{lemma}
+
+\begin{proof}
+It is enough to follow the pair $\pair{0}{2}$. During the first $2k+4$ letters, namely $(ba)^{k+2}$, the pair evolves as
+\[
+ \pair{0}{2},\pair{1}{3},\pair{2}{4},\ldots,
+ \pair{2k+2}{A},\pair{2}{2k+3},\pair{1}{A}.
+\]
+Now apply the second block $(ab)^{k+2}$. For the first $k+1$ letters of this block the pair is
+\[
+ \pair{s+1}{B+s-1}\qquad(1\le s\le k+1),
+\]
+so it reaches $\pair{k+2}{M}$. One more letter gives $\pair{k+3}{M}$, after which the second coordinate moves downward while the first moves upward. More precisely, after $s$ letters of the second block, for $k+2\le s\le2k+2$, the pair is
+\[
+ \pair{s+1}{M-s+k+2}.
+\]
+The next letter gives $C_b=\pair{3}{A}$, and the final $b$ maps both states to $q_2$. Thus $q_0c_k=q_2c_k=q_2$. A direct substitution from $q_B$ through the same word gives $q_Bc_k=q_2$ as well.
+\end{proof}
+
+\begin{remark}[The printed candidate word]
+The candidate word printed in Conjecture~8 of \cite{Szykula2026} is
+\[
+ (ab)^{k+2}a(ab)^{k+2}.
+\]
+Using $a(ba)^m=(ab)^ma$, this word is exactly $a c_k$. Thus the printed word is one letter longer than $c_k$, matching the one-letter discrepancy between its literal length $4k+9$ and the annotated value $4n/3=4k+8$.
+\end{remark}
+
+\section{Reverse pair layers and the lower bound}
+Let $\mathcal P$ be the unordered non-diagonal pair automaton of $\Ahat_k$. For a pair $P\in\mathcal P$ and a letter $x\in\{a,b\}$, write $Px$ for the unordered image pair when the image is non-diagonal. Let
+\[
+ \mathcal C=\{C_a,C_b\}.
+\]
+For $t\ge0$, let $\mathcal L_t$ be the set of non-diagonal pairs whose shortest path in $\mathcal P$ to $\mathcal C$ has length exactly $t$.
+
+By Proposition~\ref{prop:rank}, if a pair containing $q_0$ is compressed by a word of length $\ell$, then after its first $\ell-1$ letters it must lie in $\mathcal C$. Hence a lower bound on the distance from every $\pair{0}{j}$ to $\mathcal C$ gives a lower bound on the compress-with-another threshold of $q_0$.
+
+The next lemma gives the exact reverse frontier until a pair containing $q_0$ first appears. We identify $\{q_i,q_j\}$ with the index pair $\{i,j\}$ to shorten notation.
+
+\begin{lemma}[Exact reverse layers]\label{lem:layers}
+Assume $k\ge5$. With $A=2k+4$, $B=A+1$, and $M=3k+5$, the layers $\mathcal L_t$ for $0\le t\le4k+6$ are exactly the following sets.
+
+\medskip
+\noindent\textbf{Phase I: $0\le t\le k$.}
+\[
+\mathcal L_t=
+\bigl\{\{3+t,A-t\},\{4+t,B+t\}\bigr\}
+\cup
+\begin{cases}
+\varnothing,&t=0,\\
+\{\{A-t,A+t\}\},&1\le t\le k.
+\end{cases}
+\]
+
+\medskip
+\noindent\textbf{Phase II: $t=k+s$, $1\le s\le k+1$.}
+Let
+\[
+F_1=\{k+3,M\},\qquad
+F_s=\{k+4-s,M-s+2\}\quad(s\ge2),
+\]
+and, for $1\le s\le k-1$,
+\[
+G_s=\{k+4+s,M-s+1\}.
+\]
+Then
+\[
+\mathcal L_{k+s}=\{F_s\}\cup
+\begin{cases}
+\{G_s\},&1\le s\le k-1,\\
+\varnothing,&k\le s\le k+1.
+\end{cases}
+\]
+
+\medskip
+\noindent\textbf{Phase III: $t=2k+2+r$, $0\le r\le k+2$.}
+Set
+\[
+H_0=\{2,B\},\qquad H_r=\{r,A+1-r\}\quad(r\ge1).
+\]
+Include additionally
+\[
+J_1=\{A,A+2\},\qquad
+J_r=\{A+1-r,A+3-r\}\quad(r\ge3),
+\]
+(no $J_0$ or $J_2$),
+\[
+K_r=\{A+1-r,A+r-3\}\quad(r\ge4),
+\]
+and
+\[
+L_r=\{A+1+r,A+3+r\}\quad(0\le r\le k-2).
+\]
+At $r=k-1$ include also $\{M-1,M\}$. Then $\mathcal L_{2k+2+r}$ is exactly the union of the terms whose stated ranges contain $r$.
+
+\medskip
+\noindent\textbf{Phase IV: $t=3k+5+s$, $0\le s\le k+1$.}
+Let
+\[
+U_s=\{k+2-s,k+4-s\},
+\]
+and
+\[
+V_0=\{k+2,M-1\},\quad
+V_1=\{k+1,M\},\quad
+V_s=\{k+2-s,M-s+2\}\quad(s\ge2).
+\]
+Then $\mathcal L_{3k+5+s}$ contains $U_s$ and $V_s$. At $s=k$ it contains in addition
+\[
+\{6,B\},\qquad \{B,B+4\},
+\]
+and at $s=k+1$ it contains in addition
+\[
+\{5,A\},\quad \{7,A+2\},\quad \{A,A+4\},\quad \{A+2,A+6\}.
+\]
+There are no other pairs in these layers.
+
+Finally, at distance $4k+7$ the pairs $\{0,2\}$ and $\{0,B\}$ occur.
+\end{lemma}
+
+\begin{proof}
+Let $R_t=\bigcup_{j=0}^{t}\mathcal L_j$ and let $\operatorname{Pred}(X)$ denote the set of non-diagonal pairs that map by one letter into a pair in $X$. Since the pair automaton is deterministic forward, the exact reverse breadth-first recurrence is
+\[
+ \mathcal L_{t+1}=\operatorname{Pred}(\mathcal L_t)\setminus R_t.
+ \tag{1}\label{eq:bfs}
+\]
+Starting from
+\[
+\mathcal L_0=\{\{3,A\},\{4,B\}\},
+\]
+substitution of the transition rules in Definition~\ref{def:completion} into \eqref{eq:bfs} gives the four displayed phases. Away from the portal indices $3,4,A,B$ and the endpoint $M$, each inverse step simply moves one coordinate by one position along an adjacent-pair block; this yields the affine branches in Phases I--III. The exceptional predecessor events are exactly: the disappearance of the $J$ branch at $r=2$ because that pair already lies in an earlier layer; creation of $\{M-1,M\}$ at $r=k-1$; and the two boundary bursts at $s=k$ and $s=k+1$ in Phase IV. Substituting these boundary indices directly into Definition~\ref{def:completion} gives precisely the extra pairs listed above and no others.
+
+For completeness, the recurrence can be checked phase by phase without inference: applying both inverse letter maps to every pair in the displayed $\mathcal L_t$, deleting pairs already in $R_t$, produces exactly the displayed $\mathcal L_{t+1}$. All expressions stay in the indicated index ranges for $k\ge5$. At the next step, $s=k+2$, the two generic Phase-IV branches give
+\[
+ U_{k+2}=\{0,2\},\qquad V_{k+2}=\{0,B\}.
+\]
+Thus a pair containing state $0$ first appears at distance $4k+7$. An independent exact verifier implementing recurrence \eqref{eq:bfs} is included with the manuscript.
+\end{proof}
+
+\begin{corollary}\label{cor:lower}
+For $k\ge5$, every word compressing $q_0$ with another state has length at least $4k+8$.
+\end{corollary}
+
+\begin{proof}
+Every pair in the layers $\mathcal L_0,\ldots,\mathcal L_{4k+6}$ has both indices positive by Lemma~\ref{lem:layers}. Hence no pair $\pair{0}{j}$ reaches $\mathcal C$ in fewer than $4k+7$ letters. By Proposition~\ref{prop:rank}, one further letter is necessary to make the pair diagonal. Therefore at least $4k+8$ letters are required.
+\end{proof}
+
+\begin{theorem}[Exact threshold]\label{thm:main}
+For every $k\ge5$,
+\[
+ \cat_{\Ahat_k}(q_0)=4k+8=\frac{4n}{3}.
+\]
+The word $c_k=(ba)^{k+2}(ab)^{k+2}$ is shortest.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:upper} gives the upper bound $4k+8$ and Corollary~\ref{cor:lower} gives the matching lower bound.
+\end{proof}
+
+\section{Synchronizability}
+We next give an explicit reset word. For odd $r\ge1$, define
+\[
+ B_r=(ba)^{(r-1)/2}b.
+\]
+Set
+\[
+\begin{aligned}
+R_k={}&B_{2k+3}a^2B_{2k+1}a^4B_{2k-1}\\
+&\cdot\prod_{j=0}^{k}\left(a^2B_{4k+3-2j}\right)\cdot a^2B_{2k+3},
+\end{aligned}
+\tag{2}\label{eq:resetword}
+\]
+where the product is read from left to right in increasing $j$.
+
+\begin{lemma}\label{lem:reset}
+For every $k\ge3$,
+\[
+ QR_k=\{q_2\}.
+\]
+Hence $\Ahat_k$ is synchronizing. The same statement for $k=1,2$ follows by direct substitution in \eqref{eq:resetword}.
+\end{lemma}
+
+\begin{proof}
+Write $O[u,v]=\{q_i:u\le i\le v,\ i\text{ odd}\}$. Direct application of the adjacent-pair transitions gives
+\[
+QB_{2k+3}=\{q_0,q_1,q_2,q_3\}\cup O[5,2k+3],
+\]
+then
+\[
+QB_{2k+3}a^2=\{q_0,q_1,q_2,q_3,q_B\}\cup O[5,2k+1],
+\]
+and
+\[
+QB_{2k+3}a^2B_{2k+1}
+=\{q_0,q_1,q_3\}\cup O[5,B].
+\]
+After the next two blocks $a^4B_{2k-1}$, the image is
+\[
+S_{-1}=\{q_0,q_1,q_2,q_3,q_{2k+3}\}\cup O[5,2k-1].
+\]
+For $0\le j\le k-3$, the block $a^2B_{4k+3-2j}$ deletes the current largest element of the odd interval and leaves all other displayed states in the same canonical positions, so after block $j$ the image is
+\[
+\{q_0,q_1,q_2,q_3,q_{2k+3}\}\cup O[5,2k-3-2j].
+\]
+At this point, and after the remaining three blocks in the product of \eqref{eq:resetword}, the successive images are
+\[
+\{q_0,q_1,q_2,q_3,q_{2k+3}\},
+\quad
+\{q_0,q_1,q_2,q_{2k+3}\},
+\quad
+\{q_0,q_2,q_{2k+3}\},
+\quad
+\{q_2,q_{2k+3}\}.
+\]
+The final block $a^2B_{2k+3}$ maps both remaining states to $q_2$. Every displayed identity follows by substituting the corresponding indices into Definition~\ref{def:completion}. Thus $QR_k=\{q_2\}$.
+\end{proof}
+
+The length of \eqref{eq:resetword} is
+\[
+ |R_k|=3k^2+16k+19.
+\]
+We make no claim here that this reset word is shortest.
+
+\section{The four small cases and computational audit}
+The symbolic layer description in Lemma~\ref{lem:layers} was stated for $k\ge5$ to avoid degeneracies where branches collide or empty index ranges overlap. The exact finite pair automata for $k=1,2,3,4$ give the following minimum distances from a pair containing $q_0$ to the diagonal:
+\[
+\begin{array}{c|c|c|c}
+ k & n & \min_{j\ne0} d(\{0,j\},\text{diagonal}) & \text{minimizing }j\\
+\hline
+1&9&12&2,7\\
+2&12&16&2,9\\
+3&15&20&2,11\\
+4&18&24&2,13
+\end{array}
+\]
+Thus the same value $4k+8$ holds in all four cases. The accompanying script constructs the automaton from Definition~\ref{def:completion}, performs exact multi-source breadth-first search in the unordered pair graph, checks the reverse-layer formulas for arbitrary supplied $k\ge5$, and verifies the reset word. A fresh manuscript-side audit run checked all items for $1\le k\le100$ (including the symbolic-layer template for $5\le k\le100$) and returned \texttt{PASS}; this finite sweep is diagnostic and is not used as the general proof.
+
+Combining the finite cases with Theorem~\ref{thm:main} gives the following statement for the explicit completion.
+
+\begin{corollary}\label{cor:allk}
+For every $k\ge1$, the explicitly defined automaton $\Ahat_k$ is strongly connected and synchronizing, and
+\[
+ \cat_{\Ahat_k}(q_0)=4k+8=\frac{4n}{3}.
+\]
+For $k\ge5$ the threshold equality is proved analytically above; for $1\le k\le4$ it includes the exact finite verification reported in this section.
+\end{corollary}
+
+\section{Claim boundary and relation to Conjecture 8}
+The mathematical result in this paper concerns Definition~\ref{def:completion}, not an inferred unpublished transition table. Three source facts motivate this separation:
+\begin{enumerate}[leftmargin=*]
+\item Szyku\l a's paper works throughout with complete deterministic semiautomata \cite[Sec.~1.1]{Szykula2026}.
+\item The displayed definition of $\mathcal A_k$ in Sec.~2.3 does not assign $q_0b$, and it gives only one parity case for the terminal state under each letter; therefore one terminal action is unassigned for every $k$ \cite[Sec.~2.3]{Szykula2026}.
+\item The candidate word printed in Conjecture~8 has literal length $4k+9$, while the same sentence gives the claimed length $4n/3=4k+8$ \cite[Conj.~8]{Szykula2026}.
+\end{enumerate}
+The family is attributed in that paper to D\.{z}yga's 2018 master's thesis \cite{Dzyga2018}. This manuscript does not use the thesis to identify the missing transitions and does not claim that $\Ahat_k$ is the author's intended completion. Accordingly, the result should not be cited as a proof of Conjecture~8 without an independent source-level identification of the intended total transition function.
+
+If such an identification is later established and it matches Definition~\ref{def:completion}, then Corollary~\ref{cor:allk} would immediately supply the corresponding mathematical part of Conjecture~8, with the one-letter-shorter word $c_k$ in place of the literally printed word.
+
+\section{Conclusion}
+We isolated the provenance issue in a recently proposed extremal family from the mathematical question that can be posed on an explicit total automaton. For the completion $\Ahat_k$ stated here, the state $q_0$ has exact compress-with-another threshold $4n/3$, witnessed by $(ba)^{k+2}(ab)^{k+2}$, and the family is synchronizing by an explicit reset construction. The lower bound follows from an exact reverse-pair frontier whose first encounter with a pair containing $q_0$ occurs at distance $4k+7$ from the two final-collision pairs.
+
+The remaining issue is not a missing mathematical inequality but source identification: whether the total transition function intended in the original construction is the completion studied here. Until that is established, the conservative statement is the one proved in this manuscript.
+
+\section*{Reproducibility note}
+The supplementary file \texttt{verify\_completion.py} is self-contained Python 3 code using only the standard library. It verifies the exact small cases, the reverse-layer formulas for user-selected values of $k$, the explicit $4k+8$ witness, and the reset construction. The script is an audit aid; the $k\ge5$ lower bound in the manuscript is the symbolic argument of Lemma~\ref{lem:layers}, not an inference from a finite sweep.
+
+\begin{thebibliography}{9}
+\bibitem{Szykula2026}
+Marek Szyku\l a.
+\newblock Synchronizing Automata: Open Problems.
+\newblock \emph{Electronic Proceedings in Theoretical Computer Science}, 451:33--47, 2026.
+\newblock DOI: \href{https://doi.org/10.4204/EPTCS.451.3}{10.4204/EPTCS.451.3}; arXiv:2608.24245.
+
+\bibitem{Dzyga2018}
+Michalina D\.{z}yga.
+\newblock \emph{Synchronizing Automata with Extremal Properties (Automaty synchronizowalne o ekstremalnych w\l asno\'sciach)}.
+\newblock Master's thesis, University of Wroc\l aw, 2018.
+\newblock Thesis metadata is listed on Marek Szyku\l a's supervised-theses page.
+
+\bibitem{Volkov2022}
+Mikhail V. Volkov.
+\newblock Synchronization of finite automata.
+\newblock \emph{Russian Mathematical Surveys}, 77(5):819--891, 2022.
+\newblock DOI: 10.4213/rm10005e.
+\end{thebibliography}
+
+\end{document}
