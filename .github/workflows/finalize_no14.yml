@@ -1,164 +1,140 @@
-name: Finalize No14 DOI-bearing release candidate
+name: Finalize No14 DOI release
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - '.github/workflows/finalize_no14.yml'
+      - .github/workflows/finalize_no14.yml
 
 permissions:
   contents: write
 
 jobs:
   finalize:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Guard exact pre-DOI parent
-        shell: bash
+      - name: Guard parent
         run: |
           set -euo pipefail
-          expected='10a819310a84d71a02e09bb397f99daf43185f70'
-          parent="$(git rev-parse HEAD^)"
-          echo "WORKFLOW_PARENT=$parent"
-          test "$parent" = "$expected"
-          echo 'PASS_PRE_DOI_PARENT=true'
+          test "$(git rev-parse HEAD^)" = "d2dcb89b7c4551e0ef442fe6cbb00081db72fd4e"
+          echo PASS_PARENT=true
 
-      - name: Reproduce frozen claims
-        shell: bash
+      - name: Reproduce
         run: |
           set -euo pipefail
           python3 verify_completion.py --max-k 100 --template-max-k 100
 
-      - name: Insert reserved DOI metadata
-        shell: python
+      - name: Insert DOI metadata
         run: |
+          set -euo pipefail
+          python3 - <<'PY'
           from pathlib import Path
           import json
+          paper_doi='10.5281/zenodo.22803636'
+          software_doi='10.5281/zenodo.22803640'
 
-          paper_doi = '10.5281/zenodo.22803636'
-          software_doi = '10.5281/zenodo.22803640'
-
-          p = Path('paper.tex')
-          s = p.read_text(encoding='utf-8')
+          p=Path('paper.tex')
+          s=p.read_text(encoding='utf-8')
           if paper_doi not in s:
-              needle = '\\maketitle'
-              repl = '''\\maketitle
+              needle='\\maketitle'
+              repl='''\\maketitle
 
-\\begin{center}
-\\small
-Paper DOI: \\href{https://doi.org/10.5281/zenodo.22803636}{10.5281/zenodo.22803636}\\\\
-Software DOI: \\href{https://doi.org/10.5281/zenodo.22803640}{10.5281/zenodo.22803640}
-\\end{center}'''
+          \\begin{center}
+          \\small
+          Paper DOI: \\href{https://doi.org/10.5281/zenodo.22803636}{10.5281/zenodo.22803636}\\\\
+          Software DOI: \\href{https://doi.org/10.5281/zenodo.22803640}{10.5281/zenodo.22803640}
+          \\end{center}'''
               if needle not in s:
-                  raise SystemExit('STOP_PAPER_MAKETITLE_NOT_FOUND')
-              s = s.replace(needle, repl, 1)
-              p.write_text(s, encoding='utf-8')
+                  raise SystemExit('STOP_MAKETITLE_NOT_FOUND')
+              s=s.replace(needle,repl,1)
+          p.write_text(s,encoding='utf-8')
 
-          p = Path('README.md')
-          s = p.read_text(encoding='utf-8')
-          old = 'Permanent DOI fields are intentionally left blank in the pre-DOI package and will be inserted after Zenodo DOI reservation.'
-          new = f'Paper DOI: `{paper_doi}`  \nSoftware DOI: `{software_doi}`'
+          p=Path('README.md')
+          s=p.read_text(encoding='utf-8')
+          old='Permanent DOI fields are intentionally left blank in the pre-DOI package and will be inserted after Zenodo DOI reservation.'
+          new=f'Paper DOI: `{paper_doi}`  \nSoftware DOI: `{software_doi}`'
           if old in s:
-              s = s.replace(old, new)
+              s=s.replace(old,new)
           elif paper_doi not in s:
               s += f'\n\n## DOIs\n\nPaper DOI: `{paper_doi}`  \nSoftware DOI: `{software_doi}`\n'
-          p.write_text(s, encoding='utf-8')
+          p.write_text(s,encoding='utf-8')
 
-          p = Path('CITATION.cff')
-          s = p.read_text(encoding='utf-8')
-          if '\ndoi:' not in '\n' + s:
+          p=Path('CITATION.cff')
+          s=p.read_text(encoding='utf-8')
+          if '\ndoi:' not in '\n'+s:
               s += f'\ndoi: "{paper_doi}"\n'
           if software_doi not in s:
               s += ('identifiers:\n'
                     '  - type: doi\n'
                     f'    value: "{software_doi}"\n'
                     '    description: "Software and reproducibility package"\n')
-          p.write_text(s, encoding='utf-8')
+          p.write_text(s,encoding='utf-8')
 
-          p = Path('paper.publish.json')
-          obj = json.loads(p.read_text(encoding='utf-8'))
-          obj['paper_doi'] = paper_doi
-          obj['software_doi'] = software_doi
-          p.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          p=Path('paper.publish.json')
+          obj=json.loads(p.read_text(encoding='utf-8'))
+          obj['paper_doi']=paper_doi
+          obj['software_doi']=software_doi
+          p.write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
 
-          p = Path('.zenodo.json')
-          obj = json.loads(p.read_text(encoding='utf-8'))
-          obj['related_identifiers'] = [{
-              'scheme': 'doi',
-              'identifier': paper_doi,
-              'relation': 'isSupplementTo'
-          }]
-          p.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          p=Path('.zenodo.json')
+          obj=json.loads(p.read_text(encoding='utf-8'))
+          obj['related_identifiers']=[{'scheme':'doi','identifier':paper_doi,'relation':'isSupplementTo'}]
+          p.write_text(json.dumps(obj,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
 
-          p = Path('PREPUBLICATION_AUDIT.md')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace('Status: **PRE-DOI PACKAGE PASS**', 'Status: **DOI-RESERVED FINAL-FREEZE CANDIDATE**')
-          s = s.replace('- create public GitHub repository `exact-4n3-compress-explicit-completion`;', '- public GitHub repository created;')
-          s = s.replace('- reserve Paper and Software Zenodo DOIs;', f'- Paper DOI reserved: `{paper_doi}`;\n- Software DOI reserved: `{software_doi}`;')
-          s = s.replace('- insert reserved DOI metadata;', '- reserved DOI metadata inserted;')
-          p.write_text(s, encoding='utf-8')
-
+          p=Path('PREPUBLICATION_AUDIT.md')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('Status: **PRE-DOI PACKAGE PASS**','Status: **DOI-RESERVED FINAL-FREEZE CANDIDATE**')
+          s=s.replace('- create public GitHub repository `exact-4n3-compress-explicit-completion`;','- public GitHub repository created;')
+          s=s.replace('- reserve Paper and Software Zenodo DOIs;',f'- Paper DOI reserved: `{paper_doi}`;\n- Software DOI reserved: `{software_doi}`;')
+          s=s.replace('- insert reserved DOI metadata;','- reserved DOI metadata inserted;')
+          p.write_text(s,encoding='utf-8')
           print('PASS_DOI_INSERTION=true')
+          PY
 
-      - name: Install TeX and PDF inspection tools
-        shell: bash
+      - name: Build PDF
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y texlive-latex-base texlive-latex-recommended texlive-latex-extra poppler-utils
-
-      - name: Build and inspect DOI-bearing PDF
-        shell: bash
-        run: |
-          set -euo pipefail
           pdflatex -interaction=nonstopmode -halt-on-error paper.tex
           pdflatex -interaction=nonstopmode -halt-on-error paper.tex
           cp paper.pdf Yonezu_2026_Exact_4n3_Compress_Completion.pdf
           pdftotext Yonezu_2026_Exact_4n3_Compress_Completion.pdf - | grep -F '10.5281/zenodo.22803636'
           pdftotext Yonezu_2026_Exact_4n3_Compress_Completion.pdf - | grep -F '10.5281/zenodo.22803640'
           rm -f paper.aux paper.log paper.out paper.pdf
-          echo 'PASS_DOI_BEARING_PDF=true'
+          echo PASS_PDF=true
 
-      - name: Regenerate integrity manifest
-        shell: bash
+      - name: Freeze and push
         run: |
           set -euo pipefail
+          rm -f NO14_CREATE_PUSH_GITHUB_V1.ps1
+          rm -f .github/workflows/finalize_no14.yml
           python3 - <<'PY'
           from pathlib import Path
           import hashlib
-
-          root = Path('.')
-          exclude = {'SHA256SUMS.txt'}
-          ignore_suffixes = {'.aux', '.log', '.out', '.fls', '.fdb_latexmk'}
-          rows = []
+          root=Path('.')
+          skip={'SHA256SUMS.txt'}
+          suffixes={'.aux','.log','.out','.fls','.fdb_latexmk'}
+          rows=[]
           for p in sorted(root.rglob('*')):
-              if not p.is_file():
+              if not p.is_file() or '.git' in p.parts:
                   continue
-              if '.git' in p.parts:
+              if p.name in skip or p.suffix in suffixes:
                   continue
-              if p.name in exclude or p.suffix in ignore_suffixes:
-                  continue
-              h = hashlib.sha256(p.read_bytes()).hexdigest()
-              rows.append(f'{h}  ./{p.as_posix()}')
-          Path('SHA256SUMS.txt').write_text('\n'.join(rows) + '\n', encoding='utf-8')
-          pdf = Path('Yonezu_2026_Exact_4n3_Compress_Completion.pdf')
-          print('FINAL_PDF_SHA256=' + hashlib.sha256(pdf.read_bytes()).hexdigest())
+              rows.append(f'{hashlib.sha256(p.read_bytes()).hexdigest()}  ./{p.as_posix()}')
+          Path('SHA256SUMS.txt').write_text('\n'.join(rows)+'\n',encoding='utf-8')
+          pdf=Path('Yonezu_2026_Exact_4n3_Compress_Completion.pdf')
+          print('FINAL_PDF_SHA256='+hashlib.sha256(pdf.read_bytes()).hexdigest())
           PY
-
-      - name: Commit final DOI-bearing release candidate
-        shell: bash
-        run: |
-          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m 'Freeze No.14 DOI-bearing v1.0.0 publication state'
           git push origin HEAD:main
           echo "FINAL_GITHUB_HEAD=$(git rev-parse HEAD)"
-          echo 'PASS_NO14_FINAL_FREEZE=true'
+          echo PASS_NO14_FINAL_FREEZE=true
