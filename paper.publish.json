@@ -9,7 +9,7 @@
   "date": "2026-09-12",
   "version": "v1.0.0",
   "license": "CC-BY-4.0",
-  "paper_doi": "",
-  "software_doi": "",
+  "paper_doi": "10.5281/zenodo.22803636",
+  "software_doi": "10.5281/zenodo.22803640",
   "repository": "https://github.com/yonezaemon1-hub/exact-4n3-compress-explicit-completion"
 }

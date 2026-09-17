@@ -9,3 +9,9 @@ version: 1.0.0
 date-released: 2026-09-12
 repository-code: "https://github.com/yonezaemon1-hub/exact-4n3-compress-explicit-completion"
 license: MIT
+
+doi: "10.5281/zenodo.22803636"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22803640"
+    description: "Software and reproducibility package"

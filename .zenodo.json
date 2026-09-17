@@ -18,5 +18,12 @@
     "finite automata",
     "exact computation",
     "reverse pair automaton"
+  ],
+  "related_identifiers": [
+    {
+      "scheme": "doi",
+      "identifier": "10.5281/zenodo.22803636",
+      "relation": "isSupplementTo"
+    }
   ]
 }

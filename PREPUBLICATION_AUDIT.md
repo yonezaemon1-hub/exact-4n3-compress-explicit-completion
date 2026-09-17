@@ -1,6 +1,6 @@
 # No.14 Prepublication Audit
 
-Status: **PRE-DOI PACKAGE PASS**
+Status: **DOI-RESERVED FINAL-FREEZE CANDIDATE**
 
 ## Frozen claim
 
@@ -37,9 +37,10 @@ These observations support the manuscript's conservative claim boundary.
 
 ## Publication blockers remaining
 
-- create public GitHub repository `exact-4n3-compress-explicit-completion`;
-- reserve Paper and Software Zenodo DOIs;
-- insert reserved DOI metadata;
+- public GitHub repository created;
+- Paper DOI reserved: `10.5281/zenodo.22803636`;
+- Software DOI reserved: `10.5281/zenodo.22803640`;
+- reserved DOI metadata inserted;
 - rebuild/freeze DOI-bearing PDF;
 - publish GitHub release and both Zenodo records.
 

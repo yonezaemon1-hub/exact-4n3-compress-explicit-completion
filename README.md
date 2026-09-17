@@ -60,4 +60,5 @@ The paper source and PDF are released under CC BY 4.0.
 
 ## Citation
 
-Permanent DOI fields are intentionally left blank in the pre-DOI package and will be inserted after Zenodo DOI reservation.
+Paper DOI: `10.5281/zenodo.22803636`  
+Software DOI: `10.5281/zenodo.22803640`
