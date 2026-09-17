@@ -1,6 +1,6 @@
 # No.14 Prepublication Audit
 
-Status: **DOI-RESERVED FINAL-FREEZE CANDIDATE**
+Status: **FINAL FREEZE PASS / ZENODO PUBLICATION WAITING**
 
 ## Frozen claim
 
@@ -35,13 +35,21 @@ The 2026 Szykuła survey was checked directly against the public arXiv text befo
 
 These observations support the manuscript's conservative claim boundary.
 
-## Publication blockers remaining
+## Publication state
 
 - public GitHub repository created;
 - Paper DOI reserved: `10.5281/zenodo.22803636`;
 - Software DOI reserved: `10.5281/zenodo.22803640`;
 - reserved DOI metadata inserted;
-- rebuild/freeze DOI-bearing PDF;
-- publish GitHub release and both Zenodo records.
+- DOI-bearing PDF rebuilt and frozen;
+- final DOI-bearing GitHub state produced by GitHub Actions after a successful exact reproduction run;
+- generated `__pycache__` removed from the frozen package.
 
-No mathematical blocker was found in the fresh packaged reproduction.
+## Remaining publication actions
+
+- create the GitHub `v1.0.0` release at the final frozen commit;
+- upload the exact frozen PDF and exact source archive to the two Zenodo drafts;
+- audit draft files and metadata;
+- publish Software and Paper records.
+
+No mathematical blocker remains in the current release candidate.
