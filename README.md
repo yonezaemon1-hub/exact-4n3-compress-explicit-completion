@@ -62,3 +62,7 @@ The paper source and PDF are released under CC BY 4.0.
 
 Paper DOI: `10.5281/zenodo.22803636`  
 Software DOI: `10.5281/zenodo.22803640`
+
+## Research inquiries
+
+For questions about this research, reproduction, or collaboration, contact Yonezu Research Lab: [yonezaemon1+research@gmail.com](mailto:yonezaemon1+research@gmail.com).
